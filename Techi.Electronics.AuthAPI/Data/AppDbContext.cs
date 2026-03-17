@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Techi.Electronics.AuthAPI.Models;
+
+namespace Techi.Electronics.AuthAPI.Data
+{
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
+    {
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+
+        }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+        }
+    }
+}

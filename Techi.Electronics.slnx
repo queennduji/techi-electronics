@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Gateway/" />
+  <Folder Name="/Integration/" />
+  <Folder Name="/MicroServices/">
+    <Project Path="Techi.Electronics.AuthAPI/Techi.Electronics.AuthAPI.csproj" Id="cf38fc97-2ea2-4fbf-bfc3-288b159b7cc2" />
+  </Folder>
+</Solution>

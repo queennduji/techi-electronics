@@ -1,0 +1,6 @@
+@Techi.Electronics.AuthAPI_HostAddress = http://localhost:5167
+
+GET {{Techi.Electronics.AuthAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
