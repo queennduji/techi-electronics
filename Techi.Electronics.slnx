@@ -3,6 +3,8 @@
   <Folder Name="/Integration/" />
   <Folder Name="/MicroServices/">
     <Project Path="Techi.Electronics.AuthAPI/Techi.Electronics.AuthAPI.csproj" Id="cf38fc97-2ea2-4fbf-bfc3-288b159b7cc2" />
+    <Project Path="Techi.Electronics.CouponAPI/Techi.Electronics.CouponAPI.csproj" Id="6ee8a6ff-d7ae-43af-88a4-573e8bb9a967" />
     <Project Path="Techi.Electronics.ProductAPI/Techi.Electronics.ProductAPI.csproj" Id="923797fa-828f-4fcb-a59e-505049af42e2" />
+    <Project Path="Techi.Electronics.ShoppingCartAPI/Techi.Electronics.ShoppingCartAPI.csproj" Id="73b89a2e-af5d-44d4-bb53-a75362009fe5" />
   </Folder>
 </Solution>

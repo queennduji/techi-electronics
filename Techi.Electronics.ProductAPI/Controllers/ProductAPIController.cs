@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Techi.Electronics.ProductAPI.Models.Dto;
-using Techi.Electronics.ProductAPI.Services.IService;
+using Techi.Electronics.ProductAPI.Service.IService;
 
 namespace Techi.Electronics.ProductAPI.Controllers
 {

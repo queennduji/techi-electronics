@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Techi.Electronics.ProductAPI.Data;
-using Techi.Electronics.ProductAPI.Extensions;
-using Techi.Electronics.ProductAPI.Service;
-using Techi.Electronics.ProductAPI.Service.IService;
+using Techi.Electronics.CouponAPI.Data;
+using Techi.Electronics.CouponAPI.Extensions;
+using Techi.Electronics.CouponAPI.Service;
+using Techi.Electronics.CouponAPI.Service.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Techi.Electronics.ProductAPI.Data;
 using Techi.Electronics.ProductAPI.Models;
 using Techi.Electronics.ProductAPI.Models.Dto;
-using Techi.Electronics.ProductAPI.Services.IService;
+using Techi.Electronics.ProductAPI.Service.IService;
 
-namespace Techi.Electronics.ProductAPI.Services
+namespace Techi.Electronics.ProductAPI.Service
 {
     public class ProductService : IProductService
     {

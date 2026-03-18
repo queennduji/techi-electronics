@@ -1,0 +1,6 @@
+@Techi.Electronics.ShoppingCartAPI_HostAddress = http://localhost:5166
+
+GET {{Techi.Electronics.ShoppingCartAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

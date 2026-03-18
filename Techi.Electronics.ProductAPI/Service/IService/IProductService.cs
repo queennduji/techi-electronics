@@ -1,6 +1,6 @@
 ﻿using Techi.Electronics.ProductAPI.Models.Dto;
 
-namespace Techi.Electronics.ProductAPI.Services.IService
+namespace Techi.Electronics.ProductAPI.Service.IService
 {
     public interface IProductService
     {

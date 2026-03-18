@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Techi.Electronics.ProductAPI.Data;
 using Techi.Electronics.ProductAPI.Extensions;
-using Techi.Electronics.ProductAPI.Service;
-using Techi.Electronics.ProductAPI.Service.IService;
+using Techi.Electronics.ShoppingCartAPI.Data;
+using Techi.Electronics.ShoppingCartAPI.Service;
+using Techi.Electronics.ShoppingCartAPI.Service.IService;
+using Techi.Electronics.ShoppingCartAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 

@@ -1,0 +1,6 @@
+@Techi.Electronics.CouponAPI_HostAddress = http://localhost:5125
+
+GET {{Techi.Electronics.CouponAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
