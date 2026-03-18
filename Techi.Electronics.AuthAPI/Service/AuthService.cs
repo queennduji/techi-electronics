@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Techi.Electronics.AuthAPI.Data;
 using Techi.Electronics.AuthAPI.Models;
 using Techi.Electronics.AuthAPI.Models.Dto;
@@ -22,41 +23,65 @@ namespace Techi.Electronics.AuthAPI.Service
             _roleManager = roleManager;
         }
 
-        public async Task<bool> AssignRole(string email, string roleName)
+        public async Task<bool> AssignRole(string email, string roleName, CancellationToken cancellationToken)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Email.ToLower() == email.ToLower());
-            if (user != null)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var normalizedEmail = email.ToLower();
+
+            var user = await _db.ApplicationUsers
+                .FirstOrDefaultAsync(u => u.Email!.ToLower() == normalizedEmail, cancellationToken);
+
+            if (user == null)
             {
-                if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+                return false;
+            }
+
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                if (!createRoleResult.Succeeded)
                 {
-                    //create role if it does not exist
-                    _roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
-                    await _userManager.AddToRoleAsync(user, roleName);
-                    return true;
+                    return false;
                 }
             }
-            return false;
+
+            var addToRoleResult = await _userManager.AddToRoleAsync(user, roleName);
+            return addToRoleResult.Succeeded;
         }
 
-        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto)
+        public async Task<LoginResponseDto> Login(LoginRequestDto loginRequestDto, CancellationToken cancellationToken)
         {
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.UserName.ToLower() == loginRequestDto.UserName.ToLower());
+            var normalizedUserName = loginRequestDto.UserName.ToLower();
 
-            bool isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
-            if (user == null || isValid == false)
+            var user = await _db.ApplicationUsers
+                .FirstOrDefaultAsync(u => u.UserName!.ToLower() == normalizedUserName, cancellationToken);
+
+            if (user == null)
             {
-                return new LoginResponseDto()
+                return new LoginResponseDto
                 {
                     User = null,
-                    Token = ""
+                    Token = string.Empty
                 };
             }
 
-            //if user was found, Generate JWT Token
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var isValid = await _userManager.CheckPasswordAsync(user, loginRequestDto.Password);
+            if (!isValid)
+            {
+                return new LoginResponseDto
+                {
+                    User = null,
+                    Token = string.Empty
+                };
+            }
+
             var roles = await _userManager.GetRolesAsync(user);
             var token = _jwtTokenGenerator.GenerateToken(user, roles);
 
-            UserDto userDto = new()
+            var userDto = new UserDto
             {
                 Email = user.Email,
                 ID = user.Id,
@@ -64,59 +89,49 @@ namespace Techi.Electronics.AuthAPI.Service
                 PhoneNumber = user.PhoneNumber
             };
 
-            LoginResponseDto loginResponseDto = new LoginResponseDto()
+            return new LoginResponseDto
             {
                 User = userDto,
                 Token = token
             };
 
-            return loginResponseDto;
-
         }
 
-        public async Task<string> Register(RegistrationRequestDto registrationRequestDto)
+        public async Task<string> Register(RegistrationRequestDto registrationRequestDto, CancellationToken cancellationToken)
         {
-            ApplicationUser user = new()
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = new ApplicationUser
             {
                 UserName = registrationRequestDto.Email,
                 Email = registrationRequestDto.Email,
                 NormalizedEmail = registrationRequestDto.Email.ToUpper(),
                 Name = registrationRequestDto.Name,
                 PhoneNumber = registrationRequestDto.PhoneNumber,
-
             };
 
             try
             {
                 var result = await _userManager.CreateAsync(user, registrationRequestDto.Password);
-                if (result.Succeeded)
+
+                if (!result.Succeeded)
                 {
-                    var userToReturn = _db.ApplicationUsers.First(u => u.UserName == registrationRequestDto.Email);
-
-                    UserDto userDto = new()
-                    {
-                        Email = userToReturn.Email,
-                        ID = userToReturn.Id,
-                        Name = userToReturn.Name,
-                        PhoneNumber = userToReturn.PhoneNumber
-                    };
-
-                    return "";
-
-                }
-                else
-                {
-                    return result.Errors.FirstOrDefault().Description;
+                    return result.Errors.FirstOrDefault()?.Description ?? "Error encountered";
                 }
 
+                var userToReturn = await _db.ApplicationUsers
+                    .FirstAsync(u => u.UserName == registrationRequestDto.Email, cancellationToken);
+
+                return string.Empty;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception)
             {
-
-
+                return "Error encountered";
             }
-
-            return "Error encountered";
         }
     }
 }

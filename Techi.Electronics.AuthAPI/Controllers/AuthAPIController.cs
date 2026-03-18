@@ -18,9 +18,9 @@ namespace Techi.Electronics.AuthAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto registrationRequestDto)
+        public async Task<IActionResult> Register([FromBody] RegistrationRequestDto registrationRequestDto, CancellationToken cancellationToken)
         {
-            var errorMessage = await _authService.Register(registrationRequestDto);
+            var errorMessage = await _authService.Register(registrationRequestDto, cancellationToken);
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 _response.IsSuccess = false;
@@ -31,9 +31,9 @@ namespace Techi.Electronics.AuthAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto, CancellationToken cancellationToken)
         {
-            var loginResponse = await _authService.Login(loginRequestDto);
+            var loginResponse = await _authService.Login(loginRequestDto, cancellationToken);
 
             if (loginResponse.User == null)
             {
@@ -46,9 +46,9 @@ namespace Techi.Electronics.AuthAPI.Controllers
         }
 
         [HttpPost("AssignRole")]
-        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto registrationRequestDto)
+        public async Task<IActionResult> AssignRole([FromBody] RegistrationRequestDto registrationRequestDto, CancellationToken cancellationToken)
         {
-            var assignRoleSuccessful = await _authService.AssignRole(registrationRequestDto.Email, registrationRequestDto.Role.ToUpper());
+            var assignRoleSuccessful = await _authService.AssignRole(registrationRequestDto.Email, registrationRequestDto.Role.ToUpper(), cancellationToken);
 
             if (!assignRoleSuccessful)
             {

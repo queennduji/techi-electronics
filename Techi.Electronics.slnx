@@ -3,5 +3,6 @@
   <Folder Name="/Integration/" />
   <Folder Name="/MicroServices/">
     <Project Path="Techi.Electronics.AuthAPI/Techi.Electronics.AuthAPI.csproj" Id="cf38fc97-2ea2-4fbf-bfc3-288b159b7cc2" />
+    <Project Path="Techi.Electronics.ProductAPI/Techi.Electronics.ProductAPI.csproj" Id="923797fa-828f-4fcb-a59e-505049af42e2" />
   </Folder>
 </Solution>
