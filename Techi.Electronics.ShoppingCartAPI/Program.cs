@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Techi.Electronics.MessageBus;
 using Techi.Electronics.ProductAPI.Extensions;
 using Techi.Electronics.ShoppingCartAPI.Data;
 using Techi.Electronics.ShoppingCartAPI.Service;
 using Techi.Electronics.ShoppingCartAPI.Service.IService;
+using Techi.Electronics.ShoppingCartAPI.Services;
 using Techi.Electronics.ShoppingCartAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +15,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddScoped<ICouponService, CouponService>();

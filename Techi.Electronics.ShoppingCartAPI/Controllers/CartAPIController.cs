@@ -79,5 +79,20 @@ namespace Techi.Electronics.ShoppingCartAPI.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("EmailCartRequest")]
+        public async Task<ActionResult<ResponseDto>> EmailCartRequest(
+     [FromBody] CartDto cartDto,
+     CancellationToken cancellationToken)
+        {
+            var response = await _cartService.EmailCartRequestAsync(cartDto, cancellationToken);
+
+            if (!response.IsSuccess)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
+        }
     }
 }

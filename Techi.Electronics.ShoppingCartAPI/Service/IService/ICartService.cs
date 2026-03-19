@@ -9,5 +9,6 @@ namespace Techi.Electronics.ShoppingCartAPI.Service.IService
         Task<ResponseDto> RemoveCouponAsync(CartDto cartDto, CancellationToken cancellationToken);
         Task<ResponseDto> CartUpsertAsync(CartDto cartDto, CancellationToken cancellationToken);
         Task<ResponseDto> RemoveCartAsync(int cartDetailsId, CancellationToken cancellationToken);
+        Task<ResponseDto> EmailCartRequestAsync(CartDto cartDto, CancellationToken cancellationToken);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Techi.Electronics.MessageBus;
 using Techi.Electronics.ShoppingCartAPI.Data;
 using Techi.Electronics.ShoppingCartAPI.Models;
 using Techi.Electronics.ShoppingCartAPI.Models.Dto;
@@ -13,17 +14,23 @@ namespace Techi.Electronics.ShoppingCartAPI.Services
         private readonly IMapper _mapper;
         private readonly IProductService _productService;
         private readonly ICouponService _couponService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
 
         public CartService(
             AppDbContext db,
             IMapper mapper,
             ICouponService couponService,
-            IProductService productService)
+            IProductService productService,
+            IMessageBus messageBus,
+            IConfiguration configuration)
         {
             _db = db;
             _mapper = mapper;
             _couponService = couponService;
             _productService = productService;
+            _messageBus = messageBus;
+            _configuration = configuration;
         }
 
         public async Task<ResponseDto> GetCartAsync(string userId, CancellationToken cancellationToken)
@@ -242,6 +249,39 @@ namespace Techi.Electronics.ShoppingCartAPI.Services
                 }
 
                 await _db.SaveChangesAsync(cancellationToken);
+
+                response.Result = true;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseDto> EmailCartRequestAsync(CartDto cartDto, CancellationToken cancellationToken)
+        {
+            var response = new ResponseDto();
+
+            if (cartDto == null || cartDto.CartHeader == null)
+            {
+                response.IsSuccess = false;
+                response.Message = "Invalid cart request";
+                return response;
+            }
+
+            try
+            {
+                var queueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart");
+
+                if (string.IsNullOrWhiteSpace(queueName))
+                {
+                    throw new InvalidOperationException($"EmailShoppingCart {queueName} is not configured.");
+                }
+
+                await _messageBus.PublishMessage(cartDto, queueName);
 
                 response.Result = true;
             }
