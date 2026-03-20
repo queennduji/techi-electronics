@@ -1,31 +1,37 @@
-                    +------------------+
-                    |      Client      |
-                    |  Web / Mobile    |
-                    +---------+--------+
-                              |
-                              v
-        +---------------------+----------------------+
-        |                                            |
-        v                                            v
-+---------------+                           +-------------------+
-|    AuthAPI    |                           |   ProductAPI      |
-| register/login|                           | product catalog   |
-| assign roles  |                           | admin CRUD        |
-+-------+-------+                           +---------+---------+
-        |                                             ^
+## 🏗️ System Architecture
+
+```text
+                    +----------------------+
+                    |        Client        |
+                    |     Web / Mobile     |
+                    +----------+-----------+
+                               |
+                               v
+        +---------------------------------------------+
         |                                             |
-        |                                             |
-        v                                             |
-+---------------+         HTTP calls          +-------+--------+
-|  MessageBus   | <-------------------------  | ShoppingCartAPI |
-| Azure Service |                             | cart orchestration
-| Bus publisher |                             | apply/remove coupon
-+-------+-------+                             | email cart request
-        |                                     +-------+--------+
-        v                                             |
-+---------------+                                     |
-|   EmailAPI    |                                     v
-| queue consumer|                            +-------------------+
-| send emails   | -------------------------> |    CouponAPI      |
-+---------------+        HTTP calls          | coupon lookup/CRUD|
-                                              +-------------------+
+        v                                             v
++------------------+                        +----------------------+
+|     AuthAPI      |                        |     ProductAPI       |
+|------------------|                        |----------------------|
+| Register / Login |                        | Product Catalog      |
+| JWT Auth         |                        | Admin CRUD           |
+| Role Management  |                        |                      |
++--------+---------+                        +----------+-----------+
+         |                                             ^
+         |                                             |
+         v                                             |
++------------------+        HTTP Calls         +--------+----------+
+|   Message Bus    | <------------------------ | ShoppingCartAPI   |
+| (Azure Service   |                           |-------------------|
+|      Bus)        |                           | Cart Management   |
++--------+---------+                           | Apply Coupons     |
+         |                                     | Email Requests    |
+         v                                     +--------+----------+
++------------------+                                    |
+|    EmailAPI      |                                    |
+|------------------|                                    v
+| Queue Consumer   |                          +----------------------+
+| Send Emails      | -----------------------> |     CouponAPI        |
++------------------+     HTTP Calls          |----------------------|
+                                             | Coupon Lookup / CRUD |
+                                             +----------------------+
