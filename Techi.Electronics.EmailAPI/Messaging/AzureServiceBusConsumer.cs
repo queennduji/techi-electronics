@@ -22,7 +22,7 @@ namespace Techi.Electronics.EmailAPI.Messaging
         {
             _emailService = emailService;
             _configuration = configuration;
-            serviceBusConnectionString = _configuration.GetValue<string>("ServiceBusConnectionString");
+            serviceBusConnectionString = _configuration["ServiceBusConnectionString"];
             emailCartQueue = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
             registerUserQueue = _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue");
             var client = new ServiceBusClient(serviceBusConnectionString);

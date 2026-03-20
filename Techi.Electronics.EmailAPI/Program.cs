@@ -3,6 +3,7 @@ using Techi.Electronics.EmailAPI.Data;
 using Techi.Electronics.EmailAPI.Extension;
 using Techi.Electronics.EmailAPI.Messaging;
 using Techi.Electronics.EmailAPI.Services;
+using Techi.Electronics.MessageBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var optionBuilder = new DbContextOptionsBuilder<AppDbContext>();
 optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+builder.Services.AddSingleton<IMessageBus>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var connectionString = config["ServiceBusConnectionString"];
+
+    return new MessageBus(connectionString);
+});
+
 builder.Services.AddSingleton(new EmailService(optionBuilder.Options));
 
 builder.Services.AddSingleton<IAzureServiceBusConsumer, AzureServiceBusConsumer>();
