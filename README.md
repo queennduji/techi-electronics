@@ -1,29 +1,31 @@
-# techi-electronics
-ASP.NET Core backend API for an e-commerce platform with authentication, product management, orders, and payments.
-
-# Ecommerce Backend API
-
-ASP.NET Core Web API backend for an e-commerce platform.
-
-## Tech Stack
-- ASP.NET Core
-- C#
-- Entity Framework Core
-- SQL Server
-- JWT Authentication
-
-## Features
-- Product catalog
-- Shopping cart
-- Order processing
-- Authentication and authorization
-
-## Architecture
-- Clean architecture
-- Repository pattern
-- Dependency injection
-
-## API Endpoints
-GET /api/products
-POST /api/orders
-POST /api/auth/login
+                    +------------------+
+                    |      Client      |
+                    |  Web / Mobile    |
+                    +---------+--------+
+                              |
+                              v
+        +---------------------+----------------------+
+        |                                            |
+        v                                            v
++---------------+                           +-------------------+
+|    AuthAPI    |                           |   ProductAPI      |
+| register/login|                           | product catalog   |
+| assign roles  |                           | admin CRUD        |
++-------+-------+                           +---------+---------+
+        |                                             ^
+        |                                             |
+        |                                             |
+        v                                             |
++---------------+         HTTP calls          +-------+--------+
+|  MessageBus   | <-------------------------  | ShoppingCartAPI |
+| Azure Service |                             | cart orchestration
+| Bus publisher |                             | apply/remove coupon
++-------+-------+                             | email cart request
+        |                                     +-------+--------+
+        v                                             |
++---------------+                                     |
+|   EmailAPI    |                                     v
+| queue consumer|                            +-------------------+
+| send emails   | -------------------------> |    CouponAPI      |
++---------------+        HTTP calls          | coupon lookup/CRUD|
+                                              +-------------------+
