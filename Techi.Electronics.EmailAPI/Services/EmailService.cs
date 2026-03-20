@@ -31,7 +31,6 @@ namespace Techi.Electronics.EmailAPI.Services
             }
             message.Append("</ul>");
             await LogAndEmail(message.ToString(), cartDto.CartHeader.Email);
-            // await LogAndEmail(message.ToString(), "admin@gmail.com");
         }
 
         private async Task<bool> LogAndEmail(string message, string email)
