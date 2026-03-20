@@ -274,7 +274,7 @@ namespace Techi.Electronics.ShoppingCartAPI.Services
 
             try
             {
-                var queueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCart");
+                var queueName = _configuration.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue");
 
                 if (string.IsNullOrWhiteSpace(queueName))
                 {
