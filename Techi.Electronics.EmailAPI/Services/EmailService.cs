@@ -17,20 +17,51 @@ namespace Techi.Electronics.EmailAPI.Services
 
         public async Task EmailCartAndLog(CartDto cartDto)
         {
-            StringBuilder message = new StringBuilder();
+            if (cartDto?.CartHeader == null)
+                throw new ArgumentException("Invalid cart data");
 
-            message.AppendLine("<br/>Cart Email Requested ");
-            message.AppendLine("<br/>Total " + cartDto.CartHeader.CartTotal);
-            message.Append("<br/>");
-            message.Append("<ul>");
-            foreach (var item in cartDto.CartDetails)
+            var message = BuildCartEmail(cartDto);
+            await LogAndEmail(message, cartDto.CartHeader.Email);
+        }
+
+        private string BuildCartEmail(CartDto cartDto)
+        {
+            var header = cartDto.CartHeader;
+            var details = cartDto.CartDetails ?? new List<CartDetailsDto>();
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine("<h3>Shopping Cart Summary</h3>");
+            builder.AppendLine($"<p><strong>Total:</strong> {header.CartTotal:C}</p>");
+            builder.AppendLine("<ul>");
+
+            foreach (var item in details)
             {
-                message.Append("<li>");
-                message.Append(item.Product.Name + " x " + item.Count);
-                message.Append("</li>");
+                var name = item.Product?.Name ?? "Unknown Product";
+                builder.AppendLine($"<li>{name} (Qty: {item.Count})</li>");
             }
-            message.Append("</ul>");
-            await LogAndEmail(message.ToString(), cartDto.CartHeader.Email);
+
+            builder.AppendLine("</ul>");
+
+            return builder.ToString();
+        }
+
+        public async Task RegisterUserEmailAndLog(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException("Email cannot be empty");
+
+            var builder = new StringBuilder();
+
+            builder.AppendLine("<h3>User Registration Successful</h3>");
+            builder.AppendLine($"<p><strong>Email:</strong> {email}</p>");
+            builder.AppendLine($"<p><strong>Registered At:</strong> {DateTime.Now:MMMM dd, yyyy hh:mm tt}</p>");
+
+            var messageBody = builder.ToString();
+
+            Console.WriteLine($"Logging registration email for: {email}");
+
+            await LogAndEmail(messageBody, "admin@gmail.com");
         }
 
         private async Task<bool> LogAndEmail(string message, string email)

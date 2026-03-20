@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Techi.Electronics.AuthAPI.Models.Dto;
 using Techi.Electronics.AuthAPI.Service.IService;
+using Techi.Electronics.MessageBus;
 
 namespace Techi.Electronics.AuthAPI.Controllers
 {
@@ -9,11 +10,15 @@ namespace Techi.Electronics.AuthAPI.Controllers
     public class AuthAPIController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMessageBus _messageBus;
+        private readonly IConfiguration _configuration;
         protected ResponseDto _response;
 
-        public AuthAPIController(IAuthService authService)
+        public AuthAPIController(IAuthService authService, IMessageBus messageBus, IConfiguration configuration)
         {
             _authService = authService;
+            _messageBus = messageBus;
+            _configuration = configuration;
             _response = new ResponseDto();
         }
 
@@ -27,6 +32,7 @@ namespace Techi.Electronics.AuthAPI.Controllers
                 _response.Message = errorMessage;
                 return BadRequest(_response);
             }
+            await _messageBus.PublishMessage(registrationRequestDto.Email, _configuration.GetValue<string>("TopicAndQueueNames:RegisterUserQueue"));
             return Ok(_response);
         }
 

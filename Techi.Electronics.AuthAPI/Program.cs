@@ -4,6 +4,7 @@ using Techi.Electronics.AuthAPI.Data;
 using Techi.Electronics.AuthAPI.Models;
 using Techi.Electronics.AuthAPI.Service;
 using Techi.Electronics.AuthAPI.Service.IService;
+using Techi.Electronics.MessageBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFramework
 builder.Services.AddControllers();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddSwaggerGen();
 
