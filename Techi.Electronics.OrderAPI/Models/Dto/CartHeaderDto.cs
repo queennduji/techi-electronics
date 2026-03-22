@@ -1,4 +1,4 @@
-﻿namespace Techi.Electronics.EmailAPI.Data.Model.Dto
+﻿namespace Techi.Electronics.OrderAPI.Models.Dto
 {
     public class CartHeaderDto
     {
@@ -8,9 +8,7 @@
 
 
         public double Discount { get; set; }
-
         public double CartTotal { get; set; }
-
         public string? Name { get; set; }
         public string? Phone { get; set; }
         public string? Email { get; set; }

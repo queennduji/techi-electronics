@@ -103,6 +103,17 @@ namespace Techi.Electronics.CouponAPI.Service
                 await _db.Coupons.AddAsync(coupon, cancellationToken);
                 await _db.SaveChangesAsync(cancellationToken);
 
+                var options = new Stripe.CouponCreateOptions
+                {
+                    AmountOff = (long)(couponDto.DiscountAmount * 100),
+                    Name = couponDto.CouponCode,
+                    Currency = "usd",
+                    Id = couponDto.CouponCode
+                };
+
+                var service = new Stripe.CouponService();
+                await service.CreateAsync(options);
+
                 response.Result = _mapper.Map<CouponDto>(coupon);
             }
             catch (Exception ex)
@@ -163,6 +174,9 @@ namespace Techi.Electronics.CouponAPI.Service
 
                 _db.Coupons.Remove(coupon);
                 await _db.SaveChangesAsync(cancellationToken);
+
+                var service = new Stripe.CouponService();
+                await service.DeleteAsync(coupon.CouponCode);
             }
             catch (Exception ex)
             {
