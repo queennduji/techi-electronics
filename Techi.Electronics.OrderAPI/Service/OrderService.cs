@@ -25,7 +25,7 @@ namespace Techi.Electronics.OrderAPI.Service
             _messageBus = messageBus;
         }
 
-        public async Task<ResponseDto> CreateOrderAsync(CartDto cartDto)
+        public async Task<ResponseDto> CreateOrderAsync(CartDto cartDto, CancellationToken cancellationToken)
         {
             var response = new ResponseDto();
 
@@ -40,7 +40,7 @@ namespace Techi.Electronics.OrderAPI.Service
                 OrderHeader order = _mapper.Map<OrderHeader>(orderHeaderDto);
 
                 _db.OrderHeaders.Add(order);
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(cancellationToken);
 
                 orderHeaderDto.OrderHeaderId = order.OrderHeaderId;
                 response.Result = orderHeaderDto;
@@ -54,7 +54,7 @@ namespace Techi.Electronics.OrderAPI.Service
             return response;
         }
 
-        public async Task<ResponseDto> CreateStripeSessionAsync(StripeRequestDto stripeRequestDto)
+        public async Task<ResponseDto> CreateStripeSessionAsync(StripeRequestDto stripeRequestDto, CancellationToken cancellationToken)
         {
             var response = new ResponseDto();
 
@@ -113,7 +113,7 @@ namespace Techi.Electronics.OrderAPI.Service
                 }
 
                 orderHeader.StripeSessionId = session.Id;
-                await _db.SaveChangesAsync();
+                await _db.SaveChangesAsync(cancellationToken);
 
                 response.Result = stripeRequestDto;
             }
@@ -126,7 +126,7 @@ namespace Techi.Electronics.OrderAPI.Service
             return response;
         }
 
-        public async Task<ResponseDto> ValidateStripeSessionAsync(int orderHeaderId)
+        public async Task<ResponseDto> ValidateStripeSessionAsync(int orderHeaderId, CancellationToken cancellationToken)
         {
             var response = new ResponseDto();
 
@@ -160,7 +160,7 @@ namespace Techi.Electronics.OrderAPI.Service
                     orderHeader.PaymentIntentId = paymentIntent.Id;
                     orderHeader.Status = OrderStatus.Status_Approved;
 
-                    await _db.SaveChangesAsync();
+                    await _db.SaveChangesAsync(cancellationToken);
 
                     RewardsDto rewardsDto = new()
                     {

@@ -18,23 +18,23 @@ namespace Techi.Electronics.OrderAPI.Controllers
 
         [Authorize]
         [HttpPost("CreateOrder")]
-        public async Task<ResponseDto> CreateOrder([FromBody] CartDto cartDto)
+        public async Task<ResponseDto> CreateOrder([FromBody] CartDto cartDto, CancellationToken cancellationToken)
         {
-            return await _orderService.CreateOrderAsync(cartDto);
+            return await _orderService.CreateOrderAsync(cartDto, cancellationToken);
         }
 
         [Authorize]
         [HttpPost("CreateStripeSession")]
-        public async Task<ResponseDto> CreateStripeSession([FromBody] StripeRequestDto stripeRequestDto)
+        public async Task<ResponseDto> CreateStripeSession([FromBody] StripeRequestDto stripeRequestDto, CancellationToken cancellationToken)
         {
-            return await _orderService.CreateStripeSessionAsync(stripeRequestDto);
+            return await _orderService.CreateStripeSessionAsync(stripeRequestDto, cancellationToken);
         }
 
         [Authorize]
         [HttpPost("ValidateStripeSession")]
-        public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId)
+        public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId, CancellationToken cancellationToken)
         {
-            return await _orderService.ValidateStripeSessionAsync(orderHeaderId);
+            return await _orderService.ValidateStripeSessionAsync(orderHeaderId, cancellationToken);
         }
     }
 }
