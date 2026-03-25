@@ -3,6 +3,7 @@ using System.Text;
 using Techi.Electronics.EmailAPI.Data;
 using Techi.Electronics.EmailAPI.Data.Model;
 using Techi.Electronics.EmailAPI.Data.Model.Dto;
+using Techi.Electronics.EmailAPI.Message;
 
 namespace Techi.Electronics.EmailAPI.Services
 {
@@ -44,6 +45,15 @@ namespace Techi.Electronics.EmailAPI.Services
             builder.AppendLine("</ul>");
 
             return builder.ToString();
+        }
+
+        public async Task LogOrderPlaced(RewardsMessage rewardsDto)
+        {
+            string message = $"New order placed successfully.<br/>" +
+                             $"Order ID: {rewardsDto.OrderId}<br/>" +
+                             $"Timestamp: {DateTime.UtcNow}";
+
+            await LogAndEmail(message, "admin@gmail.com");
         }
 
         public async Task RegisterUserEmailAndLog(string email)

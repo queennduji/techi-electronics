@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Stripe;
 using Stripe.Checkout;
+using Techi.Electronics.MessageBus;
 using Techi.Electronics.OrderAPI.Data;
 using Techi.Electronics.OrderAPI.Models;
 using Techi.Electronics.OrderAPI.Models.Dto;
@@ -14,11 +15,14 @@ namespace Techi.Electronics.OrderAPI.Service
     {
         private readonly AppDbContext _db;
         private readonly IMapper _mapper;
-
-        public OrderService(AppDbContext db, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        private readonly IMessageBus _messageBus;
+        public OrderService(AppDbContext db, IMapper mapper, IConfiguration configuration, IMessageBus messageBus)
         {
             _db = db;
             _mapper = mapper;
+            _configuration = configuration;
+            _messageBus = messageBus;
         }
 
         public async Task<ResponseDto> CreateOrderAsync(CartDto cartDto)
@@ -157,6 +161,16 @@ namespace Techi.Electronics.OrderAPI.Service
                     orderHeader.Status = OrderStatus.Status_Approved;
 
                     await _db.SaveChangesAsync();
+
+                    RewardsDto rewardsDto = new()
+                    {
+                        OrderId = orderHeader.OrderHeaderId,
+                        RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal),
+                        UserId = orderHeader.UserId
+                    };
+
+                    string topicName = _configuration.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic");
+                    await _messageBus.PublishMessage(rewardsDto, topicName);
 
                     response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
                 }

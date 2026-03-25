@@ -1,4 +1,5 @@
 ﻿using Techi.Electronics.EmailAPI.Data.Model.Dto;
+using Techi.Electronics.EmailAPI.Message;
 
 namespace Techi.Electronics.EmailAPI.Services
 {
@@ -6,5 +7,6 @@ namespace Techi.Electronics.EmailAPI.Services
     {
         Task EmailCartAndLog(CartDto cartDto);
         Task RegisterUserEmailAndLog(string email);
+        Task LogOrderPlaced(RewardsMessage rewardsDto);
     }
 }

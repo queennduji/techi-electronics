@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Techi.Electronics.MessageBus;
 using Techi.Electronics.OrderAPI.Data;
 using Techi.Electronics.OrderAPI.Extensions;
-using Techi.Electronics.OrderAPI.Service;
-using Techi.Electronics.OrderAPI.Service.IService;
 using Techi.Electronics.OrderAPI.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +12,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddScoped<IMessageBus>(sp =>

@@ -9,6 +9,7 @@
     <Project Path="Techi.Electronics.EmailAPI/Techi.Electronics.EmailAPI.csproj" Id="f6f73f2a-8a78-4d0b-9238-bad3fc53d3b6" />
     <Project Path="Techi.Electronics.OrderAPI/Techi.Electronics.OrderAPI.csproj" Id="cede230c-098e-4acf-8dd1-0330e3723f4e" />
     <Project Path="Techi.Electronics.ProductAPI/Techi.Electronics.ProductAPI.csproj" Id="923797fa-828f-4fcb-a59e-505049af42e2" />
+    <Project Path="Techi.Electronics.RewardAPI/Techi.Electronics.RewardAPI.csproj" Id="bb07d5ab-1df8-428f-9f3c-652e7406bac4" />
     <Project Path="Techi.Electronics.ShoppingCartAPI/Techi.Electronics.ShoppingCartAPI.csproj" Id="73b89a2e-af5d-44d4-bb53-a75362009fe5" />
   </Folder>
 </Solution>

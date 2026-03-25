@@ -1,0 +1,6 @@
+@Techi.Electronics.RewardAPI_HostAddress = http://localhost:5248
+
+GET {{Techi.Electronics.RewardAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
