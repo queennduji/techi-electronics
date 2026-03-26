@@ -1,6 +1,6 @@
 ﻿namespace Techi.Electronics.OrderAPI.Utility
 {
-    public class OrderStatus
+    public class SD
     {
         public const string Status_Pending = "Pending";
         public const string Status_Approved = "Approved";

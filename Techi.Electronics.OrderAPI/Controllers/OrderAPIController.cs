@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Techi.Electronics.OrderAPI.Models.Dto;
 using Techi.Electronics.OrderAPI.Service.IService;
+using Techi.Electronics.OrderAPI.Utility;
 
 namespace Techi.Electronics.OrderAPI.Controllers
 {
@@ -14,6 +15,25 @@ namespace Techi.Electronics.OrderAPI.Controllers
         public OrderAPIController(IOrderService orderService)
         {
             _orderService = orderService;
+        }
+
+        [Authorize]
+        [HttpGet("GetOrders")]
+        public async Task<ResponseDto> GetOrders(
+            string? userId = "",
+            CancellationToken cancellationToken = default)
+        {
+            bool isAdmin = User.IsInRole(SD.RoleAdmin);
+            return await _orderService.GetOrdersAsync(userId, isAdmin, cancellationToken);
+        }
+
+        [Authorize]
+        [HttpGet("GetOrder/{id:int}")]
+        public async Task<ResponseDto> GetOrder(
+           int id,
+           CancellationToken cancellationToken = default)
+        {
+            return await _orderService.GetOrderAsync(id, cancellationToken);
         }
 
         [Authorize]
@@ -35,6 +55,16 @@ namespace Techi.Electronics.OrderAPI.Controllers
         public async Task<ResponseDto> ValidateStripeSession([FromBody] int orderHeaderId, CancellationToken cancellationToken)
         {
             return await _orderService.ValidateStripeSessionAsync(orderHeaderId, cancellationToken);
+        }
+
+        [Authorize]
+        [HttpPost("UpdateOrderStatus/{orderId:int}")]
+        public async Task<ResponseDto> UpdateOrderStatus(
+            int orderId,
+            [FromBody] string newStatus,
+            CancellationToken cancellationToken)
+        {
+            return await _orderService.UpdateOrderStatusAsync(orderId, newStatus, cancellationToken);
         }
     }
 }

@@ -25,6 +25,66 @@ namespace Techi.Electronics.OrderAPI.Service
             _messageBus = messageBus;
         }
 
+        public async Task<ResponseDto> GetOrdersAsync(
+            string? userId,
+            bool isAdmin,
+            CancellationToken cancellationToken)
+        {
+            var response = new ResponseDto();
+
+            try
+            {
+                IQueryable<OrderHeader> query = _db.OrderHeaders
+                    .Include(u => u.OrderDetails)
+                    .OrderByDescending(u => u.OrderHeaderId);
+
+                if (!isAdmin)
+                {
+                    query = query.Where(u => u.UserId == userId);
+                }
+
+                var orders = await query.ToListAsync(cancellationToken);
+                response.Result = _mapper.Map<IEnumerable<OrderHeaderDto>>(orders);
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<ResponseDto> GetOrderAsync(
+            int id,
+            CancellationToken cancellationToken)
+        {
+            var response = new ResponseDto();
+
+            try
+            {
+                var orderHeader = await _db.OrderHeaders
+                    .Include(u => u.OrderDetails)
+                    .FirstOrDefaultAsync(u => u.OrderHeaderId == id, cancellationToken);
+
+                if (orderHeader == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Order not found.";
+                    return response;
+                }
+
+                response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         public async Task<ResponseDto> CreateOrderAsync(CartDto cartDto, CancellationToken cancellationToken)
         {
             var response = new ResponseDto();
@@ -33,7 +93,7 @@ namespace Techi.Electronics.OrderAPI.Service
             {
                 OrderHeaderDto orderHeaderDto = _mapper.Map<OrderHeaderDto>(cartDto.CartHeader);
                 orderHeaderDto.OrderTime = DateTime.UtcNow;
-                orderHeaderDto.Status = OrderStatus.Status_Pending;
+                orderHeaderDto.Status = SD.Status_Pending;
                 orderHeaderDto.OrderDetails = _mapper.Map<IEnumerable<OrderDetailsDto>>(cartDto.CartDetails);
                 orderHeaderDto.OrderTotal = Math.Round(orderHeaderDto.OrderTotal, 2);
 
@@ -158,7 +218,7 @@ namespace Techi.Electronics.OrderAPI.Service
                 if (paymentIntent.Status == "succeeded")
                 {
                     orderHeader.PaymentIntentId = paymentIntent.Id;
-                    orderHeader.Status = OrderStatus.Status_Approved;
+                    orderHeader.Status = SD.Status_Approved;
 
                     await _db.SaveChangesAsync(cancellationToken);
 
@@ -188,5 +248,52 @@ namespace Techi.Electronics.OrderAPI.Service
 
             return response;
         }
+
+        public async Task<ResponseDto> UpdateOrderStatusAsync(
+           int orderId,
+           string newStatus,
+           CancellationToken cancellationToken)
+        {
+            var response = new ResponseDto();
+
+            try
+            {
+                var orderHeader = await _db.OrderHeaders
+                    .FirstOrDefaultAsync(u => u.OrderHeaderId == orderId, cancellationToken);
+
+                if (orderHeader == null)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Order not found.";
+                    return response;
+                }
+
+                if (newStatus == SD.Status_Cancelled &&
+                    !string.IsNullOrWhiteSpace(orderHeader.PaymentIntentId))
+                {
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeader.PaymentIntentId
+                    };
+
+                    var refundService = new RefundService();
+                    Refund refund = refundService.Create(options);
+                }
+
+                orderHeader.Status = newStatus;
+                await _db.SaveChangesAsync(cancellationToken);
+
+                response.Result = _mapper.Map<OrderHeaderDto>(orderHeader);
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
     }
+
 }
