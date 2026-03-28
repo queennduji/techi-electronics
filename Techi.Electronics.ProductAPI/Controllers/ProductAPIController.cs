@@ -38,7 +38,7 @@ namespace Techi.Electronics.ProductAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public async Task<ActionResult<ResponseDto>> Post([FromBody] ProductDto productDto, CancellationToken cancellationToken)
+        public async Task<ActionResult<ResponseDto>> Post([FromForm] ProductDto productDto, CancellationToken cancellationToken)
         {
             var response = await _productService.CreateProductAsync(productDto, cancellationToken);
 
@@ -52,7 +52,7 @@ namespace Techi.Electronics.ProductAPI.Controllers
 
         [HttpPut]
         [Authorize(Roles = "ADMIN")]
-        public async Task<ActionResult<ResponseDto>> Put([FromBody] ProductDto productDto, CancellationToken cancellationToken)
+        public async Task<ActionResult<ResponseDto>> Put([FromForm] ProductDto productDto, CancellationToken cancellationToken)
         {
             var response = await _productService.UpdateProductAsync(productDto, cancellationToken);
 
