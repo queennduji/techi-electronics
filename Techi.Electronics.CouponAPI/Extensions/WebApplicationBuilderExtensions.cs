@@ -7,7 +7,7 @@ namespace Techi.Electronics.CouponAPI.Extensions
 {
     public static class WebApplicationBuilderExtensions
     {
-        public static WebApplicationBuilder AddAppAuthetication(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddAppAuthentication(this WebApplicationBuilder builder)
         {
             builder.Services.AddSwaggerGen(options =>
             {

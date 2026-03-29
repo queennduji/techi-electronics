@@ -14,12 +14,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-builder.AddAppAuthetication();
+builder.AddAppAuthentication();
 
 builder.Services.AddAuthorization();
 

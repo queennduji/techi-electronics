@@ -1,5 +1,7 @@
 <Solution>
-  <Folder Name="/Gateway/" />
+  <Folder Name="/Gateway/">
+    <Project Path="Techi.Electronics.GatewaySolution/Techi.Electronics.GatewaySolution.csproj" Id="4f22e16b-375b-4670-a590-dae722c2362e" />
+  </Folder>
   <Folder Name="/Integration/">
     <Project Path="Techi.Electronics.MessageBus/Techi.Electronics.MessageBus.csproj" Id="f5dde6bb-4d1c-4286-bee4-90da422ae3dc" />
   </Folder>

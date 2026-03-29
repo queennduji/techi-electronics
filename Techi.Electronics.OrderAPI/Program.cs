@@ -23,10 +23,9 @@ builder.Services.AddScoped<IMessageBus>(sp =>
 });
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductAPI"])).AddHttpMessageHandler<BackendApiAuthenticationHttpClientHandler>();
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-builder.AddAppAuthetication();
+builder.AddAppAuthentication();
 
 builder.Services.AddAuthorization();
 

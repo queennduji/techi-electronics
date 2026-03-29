@@ -14,10 +14,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(cfg => { }, AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
-builder.AddAppAuthetication();
+builder.AddAppAuthentication();
 
 builder.Services.AddAuthorization();
 
