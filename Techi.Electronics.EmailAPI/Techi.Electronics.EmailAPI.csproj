@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.AzureServiceBus" Version="9.0.0" />
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
