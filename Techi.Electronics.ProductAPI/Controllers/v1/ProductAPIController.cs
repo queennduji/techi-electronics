@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Techi.Electronics.ProductAPI.Models.Dto;
 using Techi.Electronics.ProductAPI.Service.IService;
 
-namespace Techi.Electronics.ProductAPI.Controllers
+namespace Techi.Electronics.ProductAPI.Controllers.v1
 {
+    [ApiVersion("1.0")]
+    [ApiExplorerSettings(GroupName = "v1")]
     [Route("api/product")]
+    [Route("api/v{version:apiVersion}/product")]
     [ApiController]
     public class ProductAPIController : ControllerBase
     {
