@@ -15,5 +15,8 @@ namespace Techi.Electronics.ProductAPI.Models
         public string? ImageUrl { get; set; }
         public string? ImageLocalPath { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
     }
 }

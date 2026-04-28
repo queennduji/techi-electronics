@@ -137,6 +137,11 @@ namespace Techi.Electronics.ProductAPI.Service
 
                 response.Result = _mapper.Map<ProductDto>(existingProduct);
             }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                response.IsSuccess = false;
+                response.Message = "This product was updated by someone else. Please refresh and try again. ";
+            }
             catch (Exception ex)
             {
                 response.IsSuccess = false;
